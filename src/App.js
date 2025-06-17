@@ -1,4 +1,3 @@
-// src/App.js
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,13 +7,11 @@ import {
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import Users from "./pages/Users"; // Tambahkan ini
 
 const PrivateRoute = ({ children }) => {
-  return localStorage.getItem("admin") === "true" ? (
-    children
-  ) : (
-    <Navigate to="/" />
-  );
+  const isAuthenticated = localStorage.getItem("admin") === "true";
+  return isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
 function App() {
@@ -22,6 +19,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+
         <Route
           path="/dashboard"
           element={
@@ -38,6 +36,16 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/users"
+          element={
+            <PrivateRoute>
+              <Users />
+            </PrivateRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

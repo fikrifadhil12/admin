@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchOrders } from "../api";
+import { fetchUsers } from "../api";
 import { DataGrid } from "@mui/x-data-grid";
 import Sidebar from "../components/Sidebar";
 import Box from "@mui/material/Box";
@@ -7,35 +7,34 @@ import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Orders = () => {
-  const [orders, setOrders] = useState([]);
+const Users = () => {
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const ordersData = await fetchOrders();
-        console.log("Orders data from API:", ordersData); // Debugging
+        const usersData = await fetchUsers();
+        console.log("Users data from API:", usersData); // Debugging
 
-        if (Array.isArray(ordersData)) {
-          // Pastikan data orders memiliki struktur yang benar
-          const transformedData = ordersData.map((order) => ({
-            id: order.id,
-            user_name: order.user?.name || "N/A",
-            user_email: order.user?.email || "N/A",
-            total: order.total,
-            status: order.status,
-            created_at: order.created_at,
+        if (Array.isArray(usersData)) {
+          // Transform data untuk match dengan kolom DataGrid
+          const transformedData = usersData.map((user) => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            created_at: user.created_at,
           }));
 
-          setOrders(transformedData);
+          setUsers(transformedData);
         } else {
           setError("Format data tidak valid");
         }
       } catch (error) {
         console.error("Gagal memuat data:", error);
-        setError("Gagal memuat data pesanan");
+        setError("Gagal memuat data pengguna");
       } finally {
         setLoading(false);
       }
@@ -46,13 +45,12 @@ const Orders = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "user_name", headerName: "Nama Pelanggan", width: 200 },
-    { field: "user_email", headerName: "Email", width: 250 },
-    { field: "total", headerName: "Total", width: 120 },
-    { field: "status", headerName: "Status", width: 150 },
+    { field: "name", headerName: "Nama", width: 200 },
+    { field: "email", headerName: "Email", width: 250 },
+    { field: "phone", headerName: "Telepon", width: 150 },
     {
       field: "created_at",
-      headerName: "Tanggal",
+      headerName: "Tanggal Daftar",
       width: 200,
       valueFormatter: (params) => new Date(params.value).toLocaleString(),
     },
@@ -63,7 +61,7 @@ const Orders = () => {
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
         <Typography variant="h4" sx={{ mb: 3 }}>
-          Daftar Pesanan
+          Daftar Pengguna
         </Typography>
 
         {error && (
@@ -79,7 +77,7 @@ const Orders = () => {
         ) : (
           <div style={{ height: 600, width: "100%" }}>
             <DataGrid
-              rows={orders}
+              rows={users}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10, 25, 50]}
@@ -91,4 +89,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default Users;

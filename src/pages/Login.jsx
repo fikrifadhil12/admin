@@ -25,16 +25,20 @@ const Login = () => {
     setError("");
 
     try {
-      // Di aplikasi nyata, verifikasi harus dilakukan di backend
+      if (!credentials.email || !credentials.password) {
+        setError("Email dan password harus diisi");
+        return;
+      }
+
       if (credentials.password === "admin123") {
         localStorage.setItem("admin", "true");
         navigate("/dashboard");
       } else {
-        setError("Email atau password salah");
+        setError("Password salah");
       }
-    } catch (err) {
+    } catch (error) {
       setError("Login gagal. Silakan coba lagi.");
-      console.error("Error login:", err);
+      console.error("Login error:", error);
     }
   };
 
