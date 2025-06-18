@@ -22,10 +22,10 @@ const Orders = () => {
           // Pastikan data orders memiliki struktur yang benar
           const transformedData = ordersData.map((order) => ({
             id: order.id,
-            user_name: order.user?.name || "N/A",
-            user_email: order.user?.email || "N/A",
-            total: order.total,
-            status: order.status,
+            user_name: order.user_name || "N/A",
+            user_email: order.user_email || "N/A",
+            total: order.total_amount,
+            status: order.status || "Belum Diproses",
             created_at: order.created_at,
           }));
 
